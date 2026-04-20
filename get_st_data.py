@@ -1,6 +1,6 @@
 """
 股票数据获取模块
-可被其他Python脚本导入使用a
+可被其他Python脚本导入使用
 """
 
 import pandas as pd

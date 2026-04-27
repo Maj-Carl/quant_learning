@@ -97,4 +97,4 @@ class GoldenCrossStrategy(bt.Strategy):
                 self.order = self.sell()
 
     def stop(self):
-        self.logger.info(f'FAST_MA Period：{self.params.fast_period} SLOW_MA Period：{self.params.slow_period} Ending Value：{self.broker.getvalue()}')
+        self.opt_logger.info(f'FAST_MA Period：{self.params.fast_period} SLOW_MA Period：{self.params.slow_period} Ending Value：{self.broker.getvalue()}')

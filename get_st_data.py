@@ -17,7 +17,7 @@ plt.rcParams['axes.unicode_minus'] = False
 
 
 def get_stock_data(
-        key='224gv11ESM807Lr+AZLPCQ==',  # 默认使用你的API key
+        key='',  # 默认使用你的API key
         codes='603978',
         period='1d',
         start_date='2025-03-23',

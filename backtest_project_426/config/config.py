@@ -16,18 +16,37 @@ class Config:
     DEFAULT_END_DATE = '2026-04-15'
     DEFAULT_PERIOD = '1d'
 
-    # 策略参数
-    RUN_strategy = "GoldenCrossStrategy"
-    FAST_PERIOD = 6
-    SLOW_PERIOD = 20
+    # 策略配置（后续只改这里即可切换策略）
+    #STRATEGY_NAME = "GoldenCrossStrategy"
+    STRATEGY_NAME = "RSIStrategy"
+
+    STRATEGY_PARAMS = {
+        "GoldenCrossStrategy": {
+            "fast_period": 6,
+            "slow_period": 20,
+        },
+        "RSIStrategy": {
+            "rsi_period": 14,
+            "oversold": 30,
+            "overbought": 70,
+        },
+    }
 
     # 文件路径
     DATA_DIR = "data"
     STRATEGIES_DIR = "strategies"
     REPORTS_DIR = "reports"  # 新增报告目录
-    timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-    REPORT_FILENAME = f"{RUN_strategy}_{timestamp}.html"
 
     @classmethod
     def get_report_path(cls):
-        return os.path.join(cls.REPORTS_DIR, cls.REPORT_FILENAME)
+        timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+        report_filename = f"{cls.get_strategy_name()}_{timestamp}.html"
+        return os.path.join(cls.REPORTS_DIR, report_filename)
+
+    @classmethod
+    def get_strategy_name(cls):
+        return cls.STRATEGY_NAME
+
+    @classmethod
+    def get_strategy_params(cls):
+        return cls.STRATEGY_PARAMS.get(cls.STRATEGY_NAME, {})

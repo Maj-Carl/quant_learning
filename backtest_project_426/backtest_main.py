@@ -5,7 +5,7 @@ import sys
 import time
 # 自定义模块
 from data import get_st_data as gd
-from strategies import GoldenCrossStrategy
+import strategies as strategy_module
 from config.config import Config
 from backtest.backtest_engine import BacktestEngine
 from reports.report_generator import ReportGenerator
@@ -58,12 +58,20 @@ def main():
         engine = BacktestEngine()
 
         # 2. 添加策略
+        strategy_name = Config.get_strategy_name()
+        strategy_class = getattr(strategy_module, strategy_name, None)
+        if strategy_class is None:
+            available_strategies = ", ".join(strategy_module.__all__)
+            raise ValueError(
+                f"未找到策略 '{strategy_name}'，可选策略: {available_strategies}"
+            )
+
+        strategy_params = Config.get_strategy_params()
         engine.add_strategy(
-            GoldenCrossStrategy,
-            fast_period=Config.FAST_PERIOD,
-            slow_period=Config.SLOW_PERIOD,
-            #printlog=True
+            strategy_class,
+            **strategy_params,
         )
+        logger.info(f"当前策略: {strategy_name}, 参数: {strategy_params}")
 
         # 记录数据接口性能
         perf_logger.info("调取数据开始")
@@ -102,7 +110,11 @@ def main():
 
         # 生成报告
         report_gen = ReportGenerator(returns)
-        benchmark_returns = report_gen.prepare_benchmark_data(benchmark_df, returns)
+        benchmark_returns = report_gen.prepare_benchmark_data(benchmark_df)
+        report_gen.returns = report_gen.align_strategy_returns_to_benchmark(
+            report_gen.returns,
+            benchmark_returns,
+        )
         report_gen.benchmark_returns = benchmark_returns
 
         report_path = report_gen.generate_html_report()

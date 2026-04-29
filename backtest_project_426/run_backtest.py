@@ -1,6 +1,6 @@
 # run_backtest.py
 import sys
-from backtest_project_426.backtest_main import main
+from backtest_main import main
 
 if __name__ == '__main__':
     try:
